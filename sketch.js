@@ -1,17 +1,33 @@
 var name = "Iain";
 var font;
+var fontScale = 1000;
+var fontSizeDown = 1;
+var physicals = [];
+
+function preload() {
+  font = loadFont('fira.ttf');
+}
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-  font = loadFont('Arial.ttf');
+  var points = font.textToPoints(name, 0, 0, fontScale);
+
+  for (var i = 0; i < points.length; i++) {
+    var scaleX = points[i].x / fontSizeDown;
+    var scaleY = points[i].y / fontSizeDown + height / 1.2;
+    physicals.push(new Physical(scaleX, scaleY, 3));
+  }
 }
 
 function draw() {
   background(35, 35, 50);
-  textSize(100);
-  textFont(font);
-  text(name, width / 2 - textWidth(name) / 2, height / 2 + 50);
+  fill(255);
+  noStroke();
 
-  var points = font.textToPoints(name, 100, 100);
-  console.log(points);
+  for (var i = 0; i < physicals.length; i++) {
+    physicals[i].arrive();
+    physicals[i].flee(createVector(mouseX, mouseY));
+    physicals[i].update();
+    physicals[i].draw();
+  }
 }
